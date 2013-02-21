@@ -30,7 +30,39 @@ function CodeStoryCtrl($scope, $http) {
     });
 }
 
-function ViewPersonController($scope, $http) {
+function ViewPersonController($scope, $http, $routeParams) {
+
+
+    var userId = $routeParams.idPerson;
+
+    $http.get('codestory2013.json', {}).success(function(data) {
+        for (var i in data) {
+            data[i].gravatar = get_gravatar(data[i].EMAIL);
+            data[i].likes = [];
+            if(data[i].LIKE1) data[i].likes.push(data[i].LIKE1);
+            if(data[i].LIKE2) data[i].likes.push(data[i].LIKE2);
+            if(data[i].LIKE3) data[i].likes.push(data[i].LIKE3);
+            data[i].hates = [];
+            if(data[i].HATE1) data[i].hates.push(data[i].HATE1);
+            if(data[i].HATE2) data[i].hates.push(data[i].HATE2);
+            if (data[i].EMAIL == userId) {
+                $scope.user = data[i];
+            }
+        }
+
+        var relationsVille = [];
+
+        for (var i in data) {
+            if (data[i].EMAIL != $scope.user.EMAIL) {
+                if (data[i].VILLE.toUpperCase() == $scope.user.VILLE.toUpperCase()) {
+                    relationsVille.push(data[i]);
+                }
+            }
+        }
+
+        $scope.relationsVille = relationsVille;
+
+    })
 
 }
 

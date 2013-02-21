@@ -16,7 +16,7 @@
             </tr>
             <tr ng-repeat="participant in participants.data | orderBy:sort.column:sort.descending">
                 <td><img width="32" height="32" src="{{participant.gravatar}}"/></td>
-                <td>{{participant.PRENOM}} {{participant.NOM}}</td>
+                <td><a href="#/person/{{participant.EMAIL}}">{{participant.PRENOM}} {{participant.NOM}}</a></td>
                 <td>{{participant.EMAIL}}</td>
                 <td>{{participant.VILLE}}</td>
                 <td>
