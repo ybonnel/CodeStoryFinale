@@ -1,0 +1,35 @@
+<div class="container">
+    <div class="page-header">
+        <h1>Geektic</h1>
+    </div>
+    <div class="liste">
+        <h3>Liste des {{participants.data.length}} geek cherchant bonheur</h3>
+
+        <table class="table table-striped">
+            <tr>
+                <th>Gravatar</th>
+                <th>Nom</th>
+                <th>Email</th>
+                <th>Ville</th>
+                <th>Likes</th>
+                <th>Hates</th>
+            </tr>
+            <tr ng-repeat="participant in participants.data | orderBy:sort.column:sort.descending">
+                <td><img width="32" height="32" src="{{participant.gravatar}}"/></td>
+                <td>{{participant.PRENOM}} {{participant.NOM}}</td>
+                <td>{{participant.EMAIL}}</td>
+                <td>{{participant.VILLE}}</td>
+                <td>
+                    <ul ng-repeat="like in participant.likes">
+                        <li>{{like}}</li>
+                    </ul>
+                </td>
+                <td>
+                    <ul ng-repeat="hate in participant.hates">
+                        <li>{{hate}}</li>
+                    </ul>
+                </td>
+            </tr>
+        </table>
+    </div>
+</div>
