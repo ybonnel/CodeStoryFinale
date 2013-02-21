@@ -10,4 +10,5 @@ then
 	./startServeur.sh
 	sleep 1
 	tail -10 serveur.log
-fr
+fi
+
