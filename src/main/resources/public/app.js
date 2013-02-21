@@ -51,16 +51,30 @@ function ViewPersonController($scope, $http, $routeParams) {
         }
 
         var relationsVille = [];
+        var relationsLikes = [];
 
         for (var i in data) {
             if (data[i].EMAIL != $scope.user.EMAIL) {
                 if (data[i].VILLE.toUpperCase() == $scope.user.VILLE.toUpperCase()) {
                     relationsVille.push(data[i]);
                 }
+                var selectUser = false;
+                for (var iUser in $scope.user.likes) {
+                    for (var iOther in data[i].likes) {
+                        if ($scope.user.likes[iUser].toUpperCase() == data[i].likes[iOther].toUpperCase()) {
+                            selectUser = true;
+                        }
+
+                    }
+                }
+                if (selectUser) {
+                    relationsLikes.push(data[i]);
+                }
             }
         }
 
         $scope.relationsVille = relationsVille;
+        $scope.relationsLikes = relationsLikes;
 
     })
 
