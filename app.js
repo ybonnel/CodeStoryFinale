@@ -1,8 +1,6 @@
 
 'use strict';
 
-
-
 function get_gravatar(email, size) {
 
     // MD5 (Message-Digest Algorithm) by WebToolkit
@@ -16,7 +14,19 @@ function get_gravatar(email, size) {
 }
 
 function CodeStoryCtrl($scope, $http) {
+
+    $scope.villes = {};
     $scope.participants = $http.get('codestory2013.json', {}).success(function(data){
+        var geocoder = new google.maps.Geocoder();
+        var mapDiv = document.getElementById('map');
+        var map = new google.maps.Map(mapDiv, {
+            zoom: 8,
+            center: new google.maps.LatLng(0,0),
+            mapTypeId: google.maps.MapTypeId.ROADMAP
+        });
+        var latLngBound = new google.maps.LatLngBounds();
+        var infoWindow = new google.maps.InfoWindow();
+
         for(var i in data){
             data[i].gravatar = get_gravatar(data[i].EMAIL);
             data[i].likes = [];
@@ -26,6 +36,37 @@ function CodeStoryCtrl($scope, $http) {
             data[i].hates = [];
             if(data[i].HATE1) data[i].hates.push(data[i].HATE1);
             if(data[i].HATE2) data[i].hates.push(data[i].HATE2);
+            var ville = data[i].VILLE.toUpperCase();
+            if(ville && !$scope.villes[ville]){
+                (function(ville){
+                    console.log("load XY for " + ville);
+                    var marker = new google.maps.Marker({
+                        map: map,
+                        title: ville
+                    });
+                    google.maps.event.addListener(marker, 'click', function() {
+                        var content = ville + "<br>";
+                        for(var i in data){
+                            if(ville == data[i].VILLE.toUpperCase()) {
+                                content += '<img width="32" height="32" src="' + data[i].gravatar + '" title="' + data[i].PRENOM + " " + data[i].NOM + '"/>';
+                            }
+                        }
+                        infoWindow.setContent(content);
+                        infoWindow.open(map, marker);
+                    });
+                    $scope.villes[ville] = marker;
+                    geocoder.geocode( { 'address': ville}, function (results, status) {
+                        if (status == google.maps.GeocoderStatus.OK) {
+                            console.log(ville + " " + results[0].geometry.location);
+                            $scope.villes[ville].setPosition(results[0].geometry.location);
+                            latLngBound = latLngBound.extend(results[0].geometry.location);
+                            map.fitBounds(latLngBound);
+                            mapDiv.style.display = '';
+                            google.maps.event.trigger(map, 'resize')
+                        }
+                    });
+                 })(ville);
+            }
         }
     });
 }
