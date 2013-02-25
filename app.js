@@ -142,7 +142,7 @@ function ViewPersonController($scope, $http, $routeParams) {
     })
 }
 
-angular.module('tutu', []).config(['$routeProvider', function($routeProvider) {
+angular.module('CodeStory', []).config(['$routeProvider', function($routeProvider) {
     $routeProvider.when('/person/:idPerson', {templateUrl: 'partial/person.html', controller: ViewPersonController});
     $routeProvider.when('/all', {templateUrl: 'partial/all.html', controller: CodeStoryCtrl});
     $routeProvider.otherwise({redirectTo: '/all'});
