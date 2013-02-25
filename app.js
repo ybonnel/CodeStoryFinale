@@ -75,6 +75,62 @@ function ViewPersonController($scope, $http, $routeParams) {
 
     var userId = $routeParams.idPerson;
 
+    $scope.ville = true;
+    $scope.like = 0;
+    $scope.hate = 0;
+
+
+
+    $scope.changeData = function() {
+
+        console.log("changedata");
+
+        var relations = [];
+
+        for (var i in $scope.allParticipants) {
+            if ($scope.allParticipants[i].EMAIL != $scope.user.EMAIL) {
+                var wanted = true;
+                if ($scope.ville) {
+                    if ($scope.allParticipants[i].VILLE.toUpperCase() != $scope.user.VILLE.toUpperCase()) {
+                        wanted = false;
+                    }
+                }
+
+
+
+                var nbLikes = 0;
+                for (var iUser in $scope.user.likes) {
+                    for (var iOther in $scope.allParticipants[i].likes) {
+                        if ($scope.user.likes[iUser].toUpperCase() == $scope.allParticipants[i].likes[iOther].toUpperCase()) {
+                            nbLikes = nbLikes + 1;
+                        }
+
+                    }
+                }
+                var nbHates = 0;
+                for (var iUser in $scope.user.hates) {
+                    for (var iOther in $scope.allParticipants[i].hates) {
+                        if ($scope.user.hates[iUser].toUpperCase() == $scope.allParticipants[i].hates[iOther].toUpperCase()) {
+                            nbHates = nbHates + 1;
+                        }
+
+                    }
+                }
+
+                if (nbLikes < $scope.like || nbHates < $scope.hate) {
+                    wanted = false;
+                }
+
+                if (wanted) {
+                    relations.push($scope.allParticipants[i]);
+                }
+            }
+        }
+
+        $scope.relations = relations;
+    };
+
+
     $http.get('codestory2013.json', {}).success(function(data) {
         for (var i in data) {
             data[i].gravatar = get_gravatar(data[i].EMAIL);
@@ -89,35 +145,11 @@ function ViewPersonController($scope, $http, $routeParams) {
                 $scope.user = data[i];
             }
         }
+        $scope.allParticipants = data;
 
-        var relationsVille = [];
-        var relationsLikes = [];
-
-        for (var i in data) {
-            if (data[i].EMAIL != $scope.user.EMAIL) {
-                if (data[i].VILLE.toUpperCase() == $scope.user.VILLE.toUpperCase()) {
-                    relationsVille.push(data[i]);
-                }
-                var selectUser = false;
-                for (var iUser in $scope.user.likes) {
-                    for (var iOther in data[i].likes) {
-                        if ($scope.user.likes[iUser].toUpperCase() == data[i].likes[iOther].toUpperCase()) {
-                            selectUser = true;
-                        }
-
-                    }
-                }
-                if (selectUser) {
-                    relationsLikes.push(data[i]);
-                }
-            }
-        }
-
-        $scope.relationsVille = relationsVille;
-        $scope.relationsLikes = relationsLikes;
+        $scope.changeData();
 
     })
-
 }
 
 angular.module('tutu', []).config(['$routeProvider', function($routeProvider) {
