@@ -49,7 +49,7 @@ function CodeStoryCtrl($scope, $http) {
                         var content = ville + "<br>";
                         for(var i in data){
                             if(ville == data[i].VILLE.toUpperCase()) {
-                                content += '<img width="32" height="32" src="' + data[i].gravatar + '" title="' + data[i].PRENOM + " " + data[i].NOM + '"/>';
+                                content += '<a href="#/person/' + data[i].EMAIL + '"><img width="32" height="32" src="' + data[i].gravatar + '" title="' + data[i].PRENOM + " " + data[i].NOM + '"/></a>';
                             }
                         }
                         infoWindow.setContent(content);
