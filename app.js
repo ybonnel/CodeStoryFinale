@@ -37,9 +37,10 @@ function CodeStoryCtrl($scope, $http) {
             if(data[i].HATE1) data[i].hates.push(data[i].HATE1);
             if(data[i].HATE2) data[i].hates.push(data[i].HATE2);
             var ville = data[i].VILLE.toUpperCase();
+            var latitude = data[i].latitude;
+            var longitude = data[i].longitude;
             if(ville && !$scope.villes[ville]){
-                (function(ville){
-                    console.log("load XY for " + ville);
+                (function(ville, latitude, longitude){
                     var marker = new google.maps.Marker({
                         map: map,
                         title: ville
@@ -55,17 +56,15 @@ function CodeStoryCtrl($scope, $http) {
                         infoWindow.open(map, marker);
                     });
                     $scope.villes[ville] = marker;
-                    geocoder.geocode( { 'address': ville}, function (results, status) {
-                        if (status == google.maps.GeocoderStatus.OK) {
-                            console.log(ville + " " + results[0].geometry.location);
-                            $scope.villes[ville].setPosition(results[0].geometry.location);
-                            latLngBound = latLngBound.extend(results[0].geometry.location);
-                            map.fitBounds(latLngBound);
-                            mapDiv.style.display = '';
-                            google.maps.event.trigger(map, 'resize')
-                        }
-                    });
-                 })(ville);
+                    if (latitude) {
+                        var location = new google.maps.LatLng(latitude, longitude);
+                        $scope.villes[ville].setPosition(location);
+                        latLngBound = latLngBound.extend(location);
+                        map.fitBounds(latLngBound);
+                        mapDiv.style.display = '';
+                        google.maps.event.trigger(map, 'resize')
+                    }
+                 })(ville, latitude, longitude);
             }
         }
     });
